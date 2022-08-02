@@ -62,19 +62,22 @@ int main() {
                 cout << it->first << " " << it->second << endl;
             } else { cout << "Number not found!\n"; }
         } else if (findNumber(command)) { // ищем по фамилии номер
+            int nNumber = 0;
+            string tempSecond;
             for (map<string, string>::iterator i = phonebook.begin(); i != phonebook.end(); i++) {
-                if (i->second == command) { cout << i->first << " " << i->second; }
+
+                if (i->second == command) { cout << i->first << " "; tempSecond = i ->second;}
             }
+            cout << tempSecond;
         } else {cout << "Error";}
     }
 }
 
 bool haveLetters (string str){
-    bool haveLetters = false;
     for (int i = 0; i < str.length (); i++){
-        if (str[i] >= 65 && str [i] <= 90 || str [i] >=97 && str [i] <= 122) {haveLetters = true;}
+        if (str[i] >= 65 && str [i] <= 90 || str [i] >=97 && str [i] <= 122) {return true;}
     }
-    return haveLetters;
+    return false;
 }
 bool CommandAdd (string str) { //проверка, является ли команда добавлением
 
