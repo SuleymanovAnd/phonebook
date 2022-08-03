@@ -9,6 +9,7 @@ bool findNumber (string str);
 int main() {
 
     map<string, string> phonebook;
+    map<string,string> phonebook2;
     string command;
 
     while (phonebook.size()< 5) {
@@ -18,8 +19,8 @@ int main() {
 
         //добавление номера
         if (CommandAdd(command)) { // команда добавления
-            string first; // первая часть
-            string second; // вторая часть
+            string sFirst; // первая часть
+            string sSecond; // вторая часть
             bool space = false; // наличие пробела
             bool plus = false; // наличие +
             bool error = false; // если была ошибка
@@ -35,7 +36,7 @@ int main() {
                 // если цифры, + или - и не пробел
                 if ((isdigit(command[i]) || command[i] == '-' || plus) && !space) {
                     // добавляем символы в первую часть
-                    first += command[i];
+                    sFirst += command[i];
                 }// если не пробел и был пробел
                 else if (command[i] != ' ' && space) {
                     // если не буквы - ошибка
@@ -46,29 +47,39 @@ int main() {
                         break;
                     }
                     // добавляем ко второй части
-                    second += command[i];
+                    sSecond += command[i];
                 }
             }
             // если ошибка - выводим информацию
             if (error) cout << "Invalid request. Enter again";
             else { // иначе добавляем информацию к слолварю
-                phonebook.insert(make_pair(first, second));
+                phonebook.insert(make_pair(sFirst, sSecond));
+                map <string,string> ::iterator it = phonebook2.find (sSecond);
+                if (phonebook.size () > 1 && (it -> first == sSecond)){
+                    string tempFirst = it -> second;
+                    tempFirst.push_back (' ');
+                    tempFirst.append (sFirst);
+                    phonebook2[sSecond] = tempFirst;
+                } else{
+                    phonebook2.insert(make_pair(sSecond,sFirst));
+                }
+
                 cout << "Insert in phonebook complete";
             }
         } else if (findSurname(command)) { // ищем по номеру фамилию
 
-            map<string, string>::iterator it = phonebook.find(command);
-            if (it != phonebook.end()) {
-                cout << it->first << " " << it->second << endl;
+            if (phonebook.count (command)){
+                map<string, string>::iterator it = phonebook.find(command);
+                if (it != phonebook.end()) {
+                    cout << it->first << " " << it->second << endl;
+                }
             } else { cout << "Number not found!\n"; }
         } else if (findNumber(command)) { // ищем по фамилии номер
-            int nNumber = 0;
-            string tempSecond;
-            for (map<string, string>::iterator i = phonebook.begin(); i != phonebook.end(); i++) {
 
-                if (i->second == command) { cout << i->first << " "; tempSecond = i ->second;}
-            }
-            cout << tempSecond;
+            if (phonebook2.count(command)){
+                map<string, string>::iterator it = phonebook2.find(command);
+                cout << it->first << " " << it->second << endl;
+            }else { cout << "Surname not found!\n"; }
         } else {cout << "Error";}
     }
 }
@@ -92,7 +103,6 @@ bool findSurname (string str){
     return false;
 }
 bool findNumber (string str){
-    bool Surname = true;
     for (int i = 0; i < str.length (); i++){
         if (isdigit (str[i])|| (str [i] < 65 ||(str [i] > 90 && str [i] < 97 )|| str [i] >122 ) ) {return false;}
     }
